@@ -1,8 +1,10 @@
 package com.mohittiwari.zomatodemo.service;
 
 import com.mohittiwari.zomatodemo.dto.RestaurantRequest;
+import com.mohittiwari.zomatodemo.dto.RestaurantUpdateRequest;
 import com.mohittiwari.zomatodemo.entity.Rating;
 import com.mohittiwari.zomatodemo.entity.Restaurant;
+import com.mohittiwari.zomatodemo.exceptions.InvalidId;
 import com.mohittiwari.zomatodemo.exceptions.LocationNotFound;
 import com.mohittiwari.zomatodemo.repository.RestaurantRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class RestaurantService {
@@ -54,4 +58,18 @@ public class RestaurantService {
         }
         return restaurantRepository.findByLocation(location);
     }
+    public Restaurant editRestaurant(RestaurantUpdateRequest restaurantUpdateRequest, Long id){
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
+        if(!restaurantOptional.isPresent()){
+            throw new InvalidId("Id not found");
+        }
+        Restaurant restaurant = restaurantOptional.get();
+        if(restaurantUpdateRequest.getName() != null && !restaurantUpdateRequest.getName().isEmpty()){
+            restaurant.setName(restaurantUpdateRequest.getName());
+        }if(restaurantUpdateRequest.getLocation() != null && !restaurantUpdateRequest.getLocation().isEmpty()){
+            restaurant.setLocation(restaurantUpdateRequest.getLocation());
+        }
+        return restaurantRepository.save(restaurant);
+    }
+
 }

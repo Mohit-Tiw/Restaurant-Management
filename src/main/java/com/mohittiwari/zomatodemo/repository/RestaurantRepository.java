@@ -15,4 +15,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByLocation(String location);
     @Query(value = "select location from restaurant where location = :location" , nativeQuery = true)
     List<String> getLocation(String location);
+
+
 }
